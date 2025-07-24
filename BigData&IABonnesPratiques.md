@@ -86,9 +86,6 @@
 
 ---
 
-Très bien ! Voici la **suite logique de l'annexe**, pour **clôturer proprement** le guide **Big Data & IA** avec une **synthèse transversale** et une **recommandation de parcours de mise en œuvre**.
-
----
 
 ## 🔁 **Bloc 7 – Stratégie, Éthique & Durabilité**
 
@@ -156,5 +153,9 @@ Très bien ! Voici la **suite logique de l'annexe**, pour **clôturer proprement
 
 ---
 
-?
+Voici une version **synthétique, opérationnelle et pédagogique** de l’**annexe Big Data**, avec le **Top 7 des bonnes pratiques, outils et méthodes par bloc**.
+
+Chaque **bloc** est centré sur un thème clé d’un projet **Big Data + IA**, avec des **tableaux clairs** en 3 colonnes : **bonnes pratiques / méthodes**, **objectif**, et **outils / exemples**.
+
+---
 
