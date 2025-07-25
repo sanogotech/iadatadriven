@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Écosystème Big Data & Cloud Native</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Font: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Custom styles to extend Tailwind or for specific elements */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa; /* Light background */
+    }
+
+    /* Custom scrollbar for simulation output */
+    #simulationOutput::-webkit-scrollbar {
+      width: 8px;
+    }
+    #simulationOutput::-webkit-scrollbar-track {
+      background: #212529;
+      border-radius: 10px;
+    }
+    #simulationOutput::-webkit-scrollbar-thumb {
+      background: #4a5568;
+      border-radius: 10px;
+    }
+    #simulationOutput::-webkit-scrollbar-thumb:hover {
+      background: #6b7280;
+    }
+
+    /* Process step custom styling (less complex with Tailwind, but still needs pseudo-elements) */
+    .process-step {
+      position: relative;
+      padding-left: 2.5rem; /* Equivalent to 40px */
+      margin-bottom: 1.5rem; /* Equivalent to 24px */
+    }
+
+    .process-step:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1.25rem; /* 20px */
+      height: 1.25rem; /* 20px */
+      background-color: #3b82f6; /* Tailwind blue-500 */
+      border-radius: 9999px; /* Full rounded */
+    }
+
+    .process-step:after {
+      content: "";
+      position: absolute;
+      left: 0.5rem; /* 8px, slightly off-center for line */
+      top: 1.25rem; /* Below the circle */
+      width: 0.125rem; /* 2px */
+      height: calc(100% - 1.25rem); /* Extend to the bottom of the step */
+      background-color: #3b82f6; /* Tailwind blue-500 */
+    }
+
+    .process-step:last-child:after {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <nav class="bg-gray-900 text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a class="flex items-center space-x-2 text-lg font-bold" href="#">
+          <i class="fas fa-diagram-project text-blue-400"></i>
+          <span>Big Data & Cloud Native</span>
+        </a>
+        <div class="hidden md:flex space-x-4">
+          <a class="hover:text-blue-400 px-3 py-2 rounded-md font-medium transition duration-300" href="#overview">Vue d'ensemble</a>
+          <a class="hover:text-blue-400 px-3 py-2 rounded-md font-medium transition duration-300" href="#technologies">Technologies</a>
+          <a class="hover:text-blue-400 px-3 py-2 rounded-md font-medium transition duration-300" href="#architecture">Architecture</a>
+          <a class="hover:text-blue-400 px-3 py-2 rounded-md font-medium transition duration-300" href="#cas-pratiques">Cas pratiques</a>
+          <a class="hover:text-blue-400 px-3 py-2 rounded-md font-medium transition duration-300" href="#ressources">Ressources</a>
+        </div>
+        <!-- Mobile menu button -->
+        <div class="md:hidden">
+          <button id="mobileMenuButton" class="text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+            <span class="sr-only">Ouvrir le menu principal</span>
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div id="mobileMenu" class="md:hidden hidden">
+      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <a href="#overview" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Vue d'ensemble</a>
+        <a href="#technologies" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Technologies</a>
+        <a href="#architecture" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Architecture</a>
+        <a href="#cas-pratiques" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Cas pratiques</a>
+        <a href="#ressources" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Ressources</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="bg-gradient-to-br from-gray-900 to-blue-600 text-white py-16 mb-12 rounded-b-3xl shadow-xl">
+    <div class="max-w-4xl mx-auto text-center px-4">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-3">Écosystème Big Data & Cloud Native</h1>
+      <p class="text-lg md:text-xl mb-6">Découvrez comment Kubernetes, Rancher, Helm et d'autres technologies s'articulent pour créer des plateformes Big Data modernes.</p>
+      <div class="flex justify-center gap-4">
+        <a href="#overview" class="bg-white text-gray-900 px-8 py-3 rounded-full shadow-lg hover:bg-gray-200 transition duration-300 font-semibold">Commencer l'exploration</a>
+        <a href="#architecture" class="border-2 border-white text-white px-8 py-3 rounded-full hover:bg-white hover:text-gray-900 transition duration-300 font-semibold">Voir l'architecture</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+    <section class="mb-12 py-8">
+      <div class="flex flex-col items-center text-center">
+        <h2 class="text-3xl font-bold mb-4">Pourquoi cet écosystème ?</h2>
+        <p class="text-lg leading-relaxed max-w-2xl">Les plateformes Big Data modernes nécessitent flexibilité, scalabilité et gestion simplifiée. L'association des technologies Cloud Native avec les frameworks Big Data traditionnels répond à ces besoins.</p>
+        <div class="flex justify-center mt-8 space-x-8">
+          <div class="flex flex-col items-center">
+            <i class="fas fa-arrows-rotate text-blue-600 text-5xl"></i>
+            <p class="mt-3 font-semibold text-lg">Scalabilité</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <i class="fas fa-puzzle-piece text-blue-600 text-5xl"></i>
+            <p class="mt-3 font-semibold text-lg">Modularité</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <i class="fas fa-tachometer-alt text-blue-600 text-5xl"></i>
+            <p class="mt-3 font-semibold text-lg">Performance</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="overview" class="mb-12 py-8">
+      <h2 class="text-center text-3xl font-bold mb-8">Vue d'ensemble de l'écosystème</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200">
+            <i class="fas fa-bookmark text-blue-600 text-xl mr-3"></i>
+            <h5 class="text-xl font-semibold text-gray-900">Technologies Clés</h5>
+          </div>
+          <div class="flex-grow">
+            <p class="mb-4">Cet écosystème combine des frameworks Big Data avec des outils Cloud Native :</p>
+            <div class="bg-blue-50 border-l-4 border-blue-600 p-4 my-4 rounded-r-lg">
+              <p class="font-bold text-gray-900 mb-2">Big Data :</p>
+              <ul class="list-disc list-inside text-gray-700">
+                <li>Apache Spark - Traitement distribué</li>
+                <li>Apache Kafka - Streaming de données</li>
+                <li>Apache Flink - Traitement temps réel</li>
+              </ul>
+              <p class="mt-4 font-bold text-gray-900 mb-2">Cloud Native :</p>
+              <ul class="list-disc list-inside text-gray-700">
+                <li>Kubernetes - Orchestration de conteneurs</li>
+                <li>Rancher - Gestion de clusters</li>
+                <li>Helm - Gestion de packages</li>
+              </ul>
+            </div>
+          </div>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg self-start mt-4 transition duration-300" onclick="showDetails('technologies')">
+            <i class="fas fa-info-circle mr-2"></i>Voir les détails
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200">
+            <i class="fas fa-network-wired text-orange-500 text-xl mr-3"></i>
+            <h5 class="text-xl font-semibold text-gray-900">Interconnexions</h5>
+          </div>
+          <div class="flex-grow">
+            <p class="mb-4">Comment ces technologies interagissent :</p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span class="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-300">Kubernetes → Spark</span>
+              <span class="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-300">Rancher → Kubernetes</span>
+              <span class="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-300">Helm → Kafka</span>
+              <span class="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-300">Prometheus → Grafana</span>
+              <span class="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-300">ArgoCD → Helm</span>
+              <span class="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-800 border border-gray-300">MinIO → Spark</span>
+            </div>
+            <p class="mt-4 text-gray-700">Chaque technologie remplit un rôle spécifique dans la chaîne de traitement des données.</p>
+          </div>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg self-start mt-4 transition duration-300" onclick="showDetails('interconnections')">
+            <i class="fas fa-info-circle mr-2"></i>Voir le schéma
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200">
+            <i class="fas fa-lightbulb text-green-500 text-xl mr-3"></i>
+            <h5 class="text-xl font-semibold text-gray-900">Avantages Clés</h5>
+          </div>
+          <ul class="list-disc list-inside text-gray-700 flex-grow">
+            <li>Scalabilité élastique</li>
+            <li>Déploiements reproductibles</li>
+            <li>Gestion simplifiée</li>
+            <li>Monitoring intégré</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200">
+            <i class="fas fa-triangle-exclamation text-red-500 text-xl mr-3"></i>
+            <h5 class="text-xl font-semibold text-gray-900">Défis</h5>
+          </div>
+          <ul class="list-disc list-inside text-gray-700 flex-grow">
+            <li>Courbe d'apprentissage</li>
+            <li>Complexité opérationnelle</li>
+            <li>Gestion des dépendances</li>
+            <li>Sécurité multi-cluster</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200">
+            <i class="fas fa-chart-line text-purple-500 text-xl mr-3"></i>
+            <h5 class="text-xl font-semibold text-gray-900">Tendances</h5>
+          </div>
+          <ul class="list-disc list-inside text-gray-700 flex-grow">
+            <li>GitOps avec ArgoCD</li>
+            <li>Serverless avec KEDA</li>
+            <li>Stockage cloud-native</li>
+            <li>Observabilité unifiée</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="technologies" class="mb-12 py-8">
+      <h2 class="text-center text-3xl font-bold mb-8">Technologies en détail</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200 bg-orange-500 text-white -mx-6 px-6 pt-4 pb-4 rounded-t-xl">
+            <i class="fas fa-database text-2xl mr-3"></i>
+            <h5 class="text-xl font-semibold">Big Data</h5>
+          </div>
+          <div class="flex-grow">
+            <p class="mb-4">Les frameworks Big Data modernes s'exécutent désormais sur Kubernetes :</p>
+            <div class="bg-orange-50 border-l-4 border-orange-600 p-4 my-4 rounded-r-lg">
+              <p class="font-bold text-gray-900 mb-2">Principaux composants :</p>
+              <ul class="list-disc list-inside text-gray-700">
+                <li><strong>Spark :</strong> Traitement par lots et streaming</li>
+                <li><strong>Kafka :</strong> Messagerie distribuée</li>
+                <li><strong>Flink :</strong> Traitement temps réel</li>
+                <li><strong>Presto/Trino :</strong> Requêtes interactives</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200 bg-blue-600 text-white -mx-6 px-6 pt-4 pb-4 rounded-t-xl">
+            <i class="fas fa-boxes-stacked text-2xl mr-3"></i>
+            <h5 class="text-xl font-semibold">Kubernetes</h5>
+          </div>
+          <div class="flex-grow">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <h6 class="font-semibold text-gray-900 mb-2">Rôle dans le Big Data</h6>
+                <ul class="list-disc list-inside text-gray-700">
+                  <li>Orchestration des workers</li>
+                  <li>Gestion des ressources</li>
+                  <li>Auto-scaling</li>
+                  <li>Isolation des charges</li>
+                </ul>
+              </div>
+              <div>
+                <h6 class="font-semibold text-gray-900 mb-2">Avantages</h6>
+                <ul class="list-disc list-inside text-gray-700">
+                  <li>Abstraction de l'infra</li>
+                  <li>Déploiements déclaratifs</li>
+                  <li>Portabilité</li>
+                  <li>Écosystème riche</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg self-start mt-4 transition duration-300" onclick="showDetails('k8s-bigdata')">
+            <i class="fas fa-info-circle mr-2"></i>Cas d'usage
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200 bg-[#0075a8] text-white -mx-6 px-6 pt-4 pb-4 rounded-t-xl">
+            <i class="fas fa-layer-group text-2xl mr-3"></i>
+            <h5 class="text-xl font-semibold">Rancher</h5>
+          </div>
+          <div class="flex-grow">
+            <p class="mb-4">Plateforme de gestion de clusters Kubernetes :</p>
+            <ul class="list-disc list-inside text-gray-700">
+              <li>UI unifiée pour multi-clusters</li>
+              <li>Gestion des politiques</li>
+              <li>Intégration avec Helm</li>
+              <li>Monitoring intégré</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200 bg-[#0f1689] text-white -mx-6 px-6 pt-4 pb-4 rounded-t-xl">
+            <i class="fas fa-box-open text-2xl mr-3"></i>
+            <h5 class="text-xl font-semibold">Helm</h5>
+          </div>
+          <div class="flex-grow">
+            <p class="mb-4">Gestionnaire de packages pour Kubernetes :</p>
+            <ul class="list-disc list-inside text-gray-700">
+              <li>Charts pour Spark, Kafka, etc.</li>
+              <li>Gestion des versions</li>
+              <li>Configuration paramétrable</li>
+              <li>Déploiements reproductibles</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200 bg-gray-700 text-white -mx-6 px-6 pt-4 pb-4 rounded-t-xl">
+            <i class="fas fa-cubes text-2xl mr-3"></i>
+            <h5 class="text-xl font-semibold">Autres Technologies</h5>
+          </div>
+          <div class="flex-grow">
+            <ul class="list-disc list-inside text-gray-700">
+              <li><strong>Prometheus :</strong> Monitoring</li>
+              <li><strong>Grafana :</strong> Visualisation</li>
+              <li><strong>ArgoCD :</strong> GitOps</li>
+              <li><strong>MinIO :</strong> Stockage S3 compatible</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="architecture" class="mb-12 py-8">
+      <h2 class="text-center text-3xl font-bold mb-8">Architecture 360°</h2>
+
+      <div class="flex justify-center mb-8">
+        <div class="inline-flex rounded-lg shadow-sm" role="group">
+          <button type="button" class="px-6 py-3 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" id="diagram-tab" onclick="openTab(event, 'diagram')">Diagramme</button>
+          <button type="button" class="px-6 py-3 text-base font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" id="workflow-tab" onclick="openTab(event, 'workflow')">Workflow</button>
+          <button type="button" class="px-6 py-3 text-base font-medium text-gray-900 bg-white border border-gray-200 rounded-r-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" id="simulation-tab" onclick="openTab(event, 'simulation')">Simulation</button>
+        </div>
+      </div>
+
+      <div id="architectureTabContent">
+        <div class="tab-pane active" id="diagram">
+          <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h3 class="text-2xl font-semibold mb-6 flex items-center"><i class="fas fa-diagram-project text-blue-600 mr-3"></i>Architecture de référence</h3>
+            <p class="mb-6 text-gray-700">Cette vue montre comment les différentes technologies s'articulent dans une plateforme Big Data moderne.</p>
+
+            <div class="flex flex-col items-center gap-4 my-8">
+              <!-- Layer 1: Management -->
+              <div class="flex justify-center w-full">
+                <div class="bg-white rounded-xl p-4 shadow-md text-center min-w-[150px] border-t-4 border-[#0075a8]">
+                  <i class="fas fa-layer-group text-4xl mb-2 text-[#0075a8]"></i>
+                  <h5 class="text-lg font-semibold">Rancher</h5>
+                  <p class="text-sm text-gray-600">Gestion des clusters</p>
+                </div>
+              </div>
+
+              <div class="w-0.5 h-8 bg-blue-600"></div>
+
+              <!-- Layer 2: Orchestration -->
+              <div class="flex justify-center w-full">
+                <div class="bg-white rounded-xl p-4 shadow-md text-center min-w-[150px] border-t-4 border-blue-600">
+                  <i class="fas fa-boxes-stacked text-4xl mb-2 text-blue-600"></i>
+                  <h5 class="text-lg font-semibold">Kubernetes</h5>
+                  <p class="text-sm text-gray-600">Orchestration</p>
+                </div>
+              </div>
+
+              <div class="w-0.5 h-8 bg-blue-600"></div>
+
+              <!-- Layer 3: Data Processing -->
+              <div class="flex justify-center w-full gap-4">
+                <div class="bg-white rounded-xl p-4 shadow-md text-center min-w-[150px] border-t-4 border-orange-500">
+                  <i class="fas fa-bolt text-4xl mb-2 text-orange-500"></i>
+                  <h5 class="text-lg font-semibold">Spark/Flink</h5>
+                  <p class="text-sm text-gray-600">Traitement</p>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-md text-center min-w-[150px] border-t-4 border-gray-900">
+                  <i class="fas fa-arrows-left-right text-4xl mb-2 text-gray-900"></i>
+                  <h5 class="text-lg font-semibold">Kafka</h5>
+                  <p class="text-sm text-gray-600">Streaming</p>
+                </div>
+              </div>
+
+              <div class="w-0.5 h-8 bg-blue-600"></div>
+
+              <!-- Layer 4: Storage -->
+              <div class="flex justify-center w-full">
+                <div class="bg-white rounded-xl p-4 shadow-md text-center min-w-[150px] border-t-4 border-purple-600">
+                  <i class="fas fa-hdd text-4xl mb-2 text-purple-600"></i>
+                  <h5 class="text-lg font-semibold">MinIO</h5>
+                  <p class="text-sm text-gray-600">Stockage S3</p>
+                </div>
+              </div>
+
+              <div class="w-0.5 h-8 bg-blue-600"></div>
+
+              <!-- Layer 5: Monitoring -->
+              <div class="flex justify-center w-full gap-4">
+                <div class="bg-white rounded-xl p-4 shadow-md text-center min-w-[150px] border-t-4 border-[#e6522c]">
+                  <i class="fas fa-chart-bar text-4xl mb-2 text-[#e6522c]"></i>
+                  <h5 class="text-lg font-semibold">Prometheus</h5>
+                  <p class="text-sm text-gray-600">Métriques</p>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-md text-center min-w-[150px] border-t-4 border-[#f46800]">
+                  <i class="fas fa-chart-pie text-4xl mb-2 text-[#f46800]"></i>
+                  <h5 class="text-lg font-semibold">Grafana</h5>
+                  <p class="text-sm text-gray-600">Visualisation</p>
+                </div>
+              </div>
+
+              <div class="w-0.5 h-8 bg-blue-600"></div>
+
+              <!-- Layer 6: Deployment -->
+              <div class="flex justify-center w-full gap-4">
+                <div class="bg-white rounded-xl p-4 shadow-md text-center min-w-[150px] border-t-4 border-[#0f1689]">
+                  <i class="fas fa-box-open text-4xl mb-2 text-[#0f1689]"></i>
+                  <h5 class="text-lg font-semibold">Helm</h5>
+                  <p class="text-sm text-gray-600">Packaging</p>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-md text-center min-w-[150px] border-t-4 border-[#ef7b4d]">
+                  <i class="fas fa-code-branch text-4xl mb-2 text-[#ef7b4d]"></i>
+                  <h5 class="text-lg font-semibold">ArgoCD</h5>
+                  <p class="text-sm text-gray-600">GitOps</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-8 flex justify-center gap-4">
+              <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300" onclick="showDetails('architecture-explanation')">
+                <i class="fas fa-info-circle mr-2"></i>Explications
+              </button>
+              <button class="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-bold py-2 px-4 rounded-lg transition duration-300" onclick="downloadDiagram()">
+                <i class="fas fa-download mr-2"></i>Télécharger
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane hidden" id="workflow">
+          <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h3 class="text-2xl font-semibold mb-6 flex items-center"><i class="fas fa-arrows-rotate text-blue-600 mr-3"></i>Workflow typique</h3>
+            <p class="mb-6 text-gray-700">Cette simulation montre le flux de données et de contrôle dans une plateforme Big Data moderne.</p>
+
+            <div class="process-step">
+              <h5 class="text-lg font-semibold mb-2">1. Déploiement avec Rancher et Helm</h5>
+              <button class="bg-blue-100 text-blue-800 font-semibold py-1 px-3 rounded-full hover:bg-blue-200 transition duration-300" onclick="simulateWorkflowStep('deployment')">Simuler cette étape</button>
+              <div id="deploymentResult" class="mt-4 p-4 bg-green-50 text-green-800 rounded-lg hidden">
+                <p class="font-semibold mb-2">Le Data Engineer utilise Rancher pour :</p>
+                <ul class="list-disc list-inside">
+                  <li>Créer un nouveau cluster Kubernetes</li>
+                  <li>Déployer Spark Operator via Helm</li>
+                  <li>Configurer Kafka avec des paramètres personnalisés</li>
+                  <li>Déployer Prometheus pour le monitoring</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="process-step">
+              <h5 class="text-lg font-semibold mb-2">2. Ingestion des données</h5>
+              <button class="bg-blue-100 text-blue-800 font-semibold py-1 px-3 rounded-full opacity-50 cursor-not-allowed" id="ingestionBtn" disabled onclick="simulateWorkflowStep('ingestion')">Simuler cette étape</button>
+              <div id="ingestionResult" class="mt-4 p-4 bg-green-50 text-green-800 rounded-lg hidden">
+                <p class="font-semibold mb-2">Les données sont ingérées dans la plateforme :</p>
+                <ul class="list-disc list-inside">
+                  <li>Fichiers bruts stockés dans MinIO (S3 compatible)</li>
+                  <li>Flux temps réel envoyés vers Kafka</li>
+                  <li>Métriques système collectées par Prometheus</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="process-step">
+              <h5 class="text-lg font-semibold mb-2">3. Traitement avec Spark/Flink</h5>
+              <button class="bg-blue-100 text-blue-800 font-semibold py-1 px-3 rounded-full opacity-50 cursor-not-allowed" id="processingBtn" disabled onclick="simulateWorkflowStep('processing')">Simuler cette étape</button>
+              <div id="processingResult" class="mt-4 p-4 bg-green-50 text-green-800 rounded-lg hidden">
+                <p class="font-semibold mb-2">Les données sont traitées :</p>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full bg-white rounded-lg shadow-sm mt-2">
+                    <thead>
+                      <tr class="bg-blue-500 text-white">
+                        <th class="py-2 px-4 text-left rounded-tl-lg">Composant</th>
+                        <th class="py-2 px-4 text-left">Rôle</th>
+                        <th class="py-2 px-4 text-left rounded-tr-lg">Exemple</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="py-2 px-4">Spark</td>
+                        <td class="py-2 px-4">Traitement par lots</td>
+                        <td class="py-2 px-4">Nettoyage des données brutes</td>
+                      </tr>
+                      <tr class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="py-2 px-4">Flink</td>
+                        <td class="py-2 px-4">Traitement temps réel</td>
+                        <td class="py-2 px-4">Détection d'anomalies</td>
+                      </tr>
+                      <tr class="hover:bg-gray-50">
+                        <td class="py-2 px-4">Kafka</td>
+                        <td class="py-2 px-4">Streaming</td>
+                        <td class="py-2 px-4">Buffer des événements</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="process-step">
+              <h5 class="text-lg font-semibold mb-2">4. Monitoring et visualisation</h5>
+              <button class="bg-blue-100 text-blue-800 font-semibold py-1 px-3 rounded-full opacity-50 cursor-not-allowed" id="monitoringBtn" disabled onclick="simulateWorkflowStep('monitoring')">Simuler cette étape</button>
+              <div id="monitoringResult" class="mt-4 p-4 bg-green-50 text-green-800 rounded-lg hidden">
+                <p class="font-semibold mb-2">Le système est surveillé :</p>
+                <ul class="list-disc list-inside">
+                  <li>Prometheus collecte les métriques de performance</li>
+                  <li>Grafana affiche des tableaux de bord personnalisés</li>
+                  <li>Alertes configurées pour les seuils critiques</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="mt-8">
+              <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300" onclick="resetWorkflowSimulation()">Réinitialiser la simulation</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane hidden" id="simulation">
+          <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h3 class="text-2xl font-semibold mb-6 flex items-center"><i class="fas fa-play-circle text-blue-600 mr-3"></i>Simulation interactive</h3>
+            <p class="mb-6 text-gray-700">Cette simulation vous permet d'expérimenter la gestion d'une plateforme Big Data avec ces technologies.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div class="bg-gray-50 rounded-xl shadow-md p-6">
+                <div class="bg-blue-600 text-white text-xl font-semibold -mx-6 px-6 pt-4 pb-4 rounded-t-xl mb-6">
+                  <h5 class="mb-0">Scénario</h5>
+                </div>
+                <div class="mb-4">
+                  <label for="scenarioSelect" class="block text-gray-700 text-sm font-bold mb-2">Choisissez un scénario :</label>
+                  <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" id="scenarioSelect">
+                    <option value="scaling">Auto-scaling Spark</option>
+                    <option value="failure">Gestion des pannes</option>
+                    <option value="upgrade">Mise à jour Kafka</option>
+                    <option value="monitoring">Configuration monitoring</option>
+                  </select>
+                </div>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-full transition duration-300" onclick="startSimulation()">
+                  <i class="fas fa-play-circle mr-2"></i>Démarrer
+                </button>
+              </div>
+
+              <div class="bg-gray-50 rounded-xl shadow-md p-6">
+                <div class="bg-orange-500 text-white text-xl font-semibold -mx-6 px-6 pt-4 pb-4 rounded-t-xl mb-6">
+                  <h5 class="mb-0">Paramètres</h5>
+                </div>
+                <div class="mb-4">
+                  <label for="complexitySelect" class="block text-gray-700 text-sm font-bold mb-2">Complexité :</label>
+                  <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" id="complexitySelect">
+                    <option value="easy">Débutant</option>
+                    <option value="medium">Intermédiaire</option>
+                    <option value="hard">Expert</option>
+                  </select>
+                </div>
+                <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-bold mb-2">Technologies :</label>
+                  <div class="flex flex-col space-y-2">
+                    <label class="inline-flex items-center">
+                      <input type="checkbox" id="k8sCheck" class="form-checkbox text-blue-600 rounded" checked>
+                      <span class="ml-2 text-gray-700">Kubernetes</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                      <input type="checkbox" id="rancherCheck" class="form-checkbox text-blue-600 rounded" checked>
+                      <span class="ml-2 text-gray-700">Rancher</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                      <input type="checkbox" id="helmCheck" class="form-checkbox text-blue-600 rounded" checked>
+                      <span class="ml-2 text-gray-700">Helm</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl shadow-md p-6 mt-8">
+              <div class="bg-gray-800 text-white text-xl font-semibold -mx-6 px-6 pt-4 pb-4 rounded-t-xl mb-6">
+                <h5 class="mb-0">Console de simulation</h5>
+              </div>
+              <div id="simulationOutput" class="min-h-[300px] max-h-[400px] overflow-y-auto bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-sm">
+                <p>&gt; Sélectionnez un scénario et cliquez sur "Démarrer"</p>
+              </div>
+
+              <div class="mt-6 hidden" id="simulationActions">
+                <h6 class="text-lg font-semibold mb-3">Actions disponibles :</h6>
+                <div class="flex flex-wrap gap-3 mb-6" id="actionButtons">
+                  <!-- Actions will be dynamically injected here -->
+                </div>
+
+                <button class="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300" onclick="finishSimulation()">
+                  <i class="fas fa-check-circle mr-2"></i>Terminer la simulation
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cas-pratiques" class="mb-12 py-8">
+      <h2 class="text-center text-3xl font-bold mb-8">Cas pratiques</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200">
+            <i class="fas fa-cloud text-blue-500 text-xl mr-3"></i>
+            <h5 class="text-xl font-semibold text-gray-900">Migration vers Kubernetes</h5>
+          </div>
+          <div class="flex-grow">
+            <p class="mb-2 text-gray-700">Une entreprise veut migrer ses jobs Spark d'Hadoop YARN vers Kubernetes.</p>
+            <p class="font-semibold text-gray-800">Défis : <span class="font-normal">Compatibilité, performance, gestion des données.</span></p>
+          </div>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg self-start mt-4 transition duration-300" onclick="showCaseStudy('migration')">
+            <i class="fas fa-book-open mr-2"></i>Voir la solution
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200">
+            <i class="fas fa-chart-line text-green-500 text-xl mr-3"></i>
+            <h5 class="text-xl font-semibold text-gray-900">Monitoring unifié</h5>
+          </div>
+          <div class="flex-grow">
+            <p class="mb-2 text-gray-700">Mettre en place un monitoring pour Spark, Kafka et Kubernetes.</p>
+            <p class="font-semibold text-gray-800">Défis : <span class="font-normal">Métriques hétérogènes, corrélation, alertes.</span></p>
+          </div>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg self-start mt-4 transition duration-300" onclick="showCaseStudy('monitoring')">
+            <i class="fas fa-book-open mr-2"></i>Voir la solution
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200">
+            <i class="fas fa-arrows-up-down-left-right text-purple-500 text-xl mr-3"></i>
+            <h5 class="text-xl font-semibold text-gray-900">Auto-scaling avec KEDA</h5>
+          </div>
+          <div class="flex-grow">
+            <p class="mb-2 text-gray-700">Implémenter l'auto-scaling pour les jobs Spark basé sur la charge Kafka.</p>
+            <p class="font-semibold text-gray-800">Défis : <span class="font-normal">Latence, coût, stabilité.</span></p>
+          </div>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg self-start mt-4 transition duration-300" onclick="showCaseStudy('autoscaling')">
+            <i class="fas fa-book-open mr-2"></i>Voir la solution
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl p-6 h-full flex flex-col">
+          <div class="flex items-center mb-4 pb-4 border-b border-gray-200">
+            <i class="fas fa-shield-alt text-red-500 text-xl mr-3"></i>
+            <h5 class="text-xl font-semibold text-gray-900">Sécurité multi-clusters</h5>
+          </div>
+          <div class="flex-grow">
+            <p class="mb-2 text-gray-700">Gérer l'accès et la sécurité sur plusieurs clusters avec Rancher.</p>
+            <p class="font-semibold text-gray-800">Défis : <span class="font-normal">RBAC, audit, conformité.</span></p>
+          </div>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg self-start mt-4 transition duration-300" onclick="showCaseStudy('security')">
+            <i class="fas fa-book-open mr-2"></i>Voir la solution
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="ressources" class="mb-12 py-8">
+      <h2 class="text-center text-3xl font-bold mb-8">Ressources supplémentaires</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
+          <div class="bg-gray-800 text-white text-xl font-semibold -mx-6 px-6 pt-4 pb-4 rounded-t-xl mb-6">
+            <h5 class="mb-0">Documentation officielle</h5>
+          </div>
+          <ul class="list-disc list-inside text-gray-700 space-y-2">
+            <li><a href="https://kubernetes.io/docs/concepts/overview/" target="_blank" class="text-blue-600 hover:underline">Kubernetes Concepts</a></li>
+            <li><a href="https://rancher.com/docs/" target="_blank" class="text-blue-600 hover:underline">Rancher Documentation</a></li>
+            <li><a href="https://helm.sh/docs/" target="_blank" class="text-blue-600 hover:underline">Helm Docs</a></li>
+            <li><a href="https://spark.apache.org/docs/latest/running-on-kubernetes.html" target="_blank" class="text-blue-600 hover:underline">Spark on K8s</a></li>
+            <li><a href="https://kafka.apache.org/documentation/" target="_blank" class="text-blue-600 hover:underline">Kafka Docs</a></li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
+          <div class="bg-gray-800 text-white text-xl font-semibold -mx-6 px-6 pt-4 pb-4 rounded-t-xl mb-6">
+            <h5 class="mb-0">Tutoriels & Blogs</h5>
+          </div>
+          <ul class="list-disc list-inside text-gray-700 space-y-2">
+            <li><a href="https://blog.min.io/hyper-converged-infrastructure-with-minio-and-kubernetes/" target="_blank" class="text-blue-600 hover:underline">MinIO + K8s</a></li>
+            <li><a href="https://www.cncf.io/blog/" target="_blank" class="text-blue-600 hover:underline">CNCF Blog</a></li>
+            <li><a href="https://developer.confluent.io/" target="_blank" class="text-blue-600 hover:underline">Confluent (Kafka)</a></li>
+            <li><a href="https://spark.apache.org/examples.html" target="_blank" class="text-blue-600 hover:underline">Spark Examples</a></li>
+            <li><a href="https://argoproj.github.io/argo-cd/getting_started/" target="_blank" class="text-blue-600 hover:underline">ArgoCD Guide</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
+        <div class="bg-gray-800 text-white text-xl font-semibold -mx-6 px-6 pt-4 pb-4 rounded-t-xl mb-6">
+          <h5 class="mb-0">Communautés & Événements</h5>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <h6 class="font-semibold text-gray-900 mb-2">Meetups</h6>
+            <ul class="list-disc list-inside text-gray-700">
+              <li>CNCF Meetups</li>
+              <li>Data Council</li>
+              <li>Apache Con</li>
+            </ul>
+          </div>
+          <div>
+            <h6 class="font-semibold text-gray-900 mb-2">Conférences</h6>
+            <ul class="list-disc list-inside text-gray-700">
+              <li>KubeCon</li>
+              <li>DataWorks Summit</li>
+              <li>Big Data Paris</li>
+            </ul>
+          </div>
+          <div>
+            <h6 class="font-semibold text-gray-900 mb-2">Formations</h6>
+            <ul class="list-disc list-inside text-gray-700">
+              <li>CKAD (Kubernetes)</li>
+              <li>Spark Certification</li>
+              <li>Kafka Courses</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="bg-gray-900 text-white py-8 mt-12 shadow-inner">
+    <div class="max-w-7xl mx-auto text-center px-4">
+      <p class="mb-2 text-lg font-semibold">Portail Big Data & Cloud Native</p>
+      <p class="mb-0 text-sm">&copy; 2023 - Tous droits réservés. Outil pédagogique.</p>
+    </div>
+  </footer>
+
+  <!-- Modal for details (now using Tailwind for styling, no Bootstrap JS needed) -->
+  <div id="detailsModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl w-11/12 md:max-w-3xl lg:max-w-4xl p-6 relative">
+      <div class="flex justify-between items-center pb-4 border-b border-gray-200 mb-4">
+        <h5 id="detailsModalLabel" class="text-2xl font-bold text-gray-900">Détails</h5>
+        <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 text-3xl leading-none">&times;</button>
+      </div>
+      <div id="detailsModalContent" class="modal-body overflow-y-auto max-h-[70vh] text-gray-700">
+        <!-- Content will be injected here -->
+        Chargement...
+      </div>
+      <div class="pt-4 border-t border-gray-200 mt-4 flex justify-end">
+        <button onclick="closeModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg transition duration-300">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Global Variables and DOM Elements ---
+    let workflowSimulationState = {
+      deployment: false,
+      ingestion: false,
+      processing: false,
+      monitoring: false
+    };
+
+    let interactiveSimulationState = {
+      running: false,
+      scenario: '',
+      complexity: '',
+      technologies: {
+        k8s: false,
+        rancher: false,
+        helm: false
+      },
+      step: 0
+    };
+
+    const detailsModal = document.getElementById('detailsModal');
+    const detailsModalTitle = document.getElementById('detailsModalLabel');
+    const detailsModalContent = document.getElementById('detailsModalContent');
+
+    const workflowDeploymentResult = document.getElementById('deploymentResult');
+    const workflowIngestionResult = document.getElementById('ingestionResult');
+    const workflowProcessingResult = document.getElementById('processingResult');
+    const workflowMonitoringResult = document.getElementById('monitoringResult');
+
+    const ingestionBtn = document.getElementById('ingestionBtn');
+    const processingBtn = document.getElementById('processingBtn');
+    const monitoringBtn = document.getElementById('monitoringBtn');
+
+    const scenarioSelect = document.getElementById('scenarioSelect');
+    const complexitySelect = document.getElementById('complexitySelect');
+    const k8sCheck = document.getElementById('k8sCheck');
+    const rancherCheck = document.getElementById('rancherCheck');
+    const helmCheck = document.getElementById('helmCheck');
+    const simulationOutput = document.getElementById('simulationOutput');
+    const simulationActions = document.getElementById('simulationActions');
+    const actionButtonsContainer = document.getElementById('actionButtons');
+
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    // --- Helper Functions ---
+
+    /**
+     * Opens the modal with specified title and content.
+     * @param {string} title - The title for the modal.
+     * @param {string} contentHtml - The HTML content to display in the modal body.
+     */
+    function openModal(title, contentHtml) {
+      detailsModalTitle.innerHTML = title;
+      detailsModalContent.innerHTML = contentHtml;
+      detailsModal.classList.remove('hidden');
+    }
+
+    /**
+     * Closes the modal.
+     */
+    function closeModal() {
+      detailsModal.classList.add('hidden');
+    }
+
+    /**
+     * Switches between tabs in the Architecture section.
+     * @param {Event} evt - The click event.
+     * @param {string} tabName - The ID of the tab to show ('diagram', 'workflow', 'simulation').
+     */
+    function openTab(evt, tabName) {
+      // Get all elements with class="tab-pane" and hide them
+      const tabPanes = document.querySelectorAll('#architectureTabContent .tab-pane');
+      tabPanes.forEach(pane => pane.classList.add('hidden'));
+
+      // Get all elements with class="px-6 py-3..." (tab buttons) and remove "active" styling
+      const tabButtons = document.querySelectorAll('#architectureTabs button');
+      tabButtons.forEach(btn => btn.classList.remove('bg-blue-600', 'text-white', 'hover:bg-blue-700'));
+      tabButtons.forEach(btn => btn.classList.add('bg-white', 'text-gray-900', 'hover:bg-gray-100'));
+
+      // Show the current tab, and add an "active" class to the button that opened the tab
+      document.getElementById(tabName).classList.remove('hidden');
+      evt.currentTarget.classList.remove('bg-white', 'text-gray-900', 'hover:bg-gray-100');
+      evt.currentTarget.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+    }
+
+    /**
+     * Dynamically displays detailed information in a modal based on the type.
+     * @param {string} type - Identifier for the type of details to show.
+     */
+    function showDetails(type) {
+      let title = '';
+      let content = '';
+
+      switch (type) {
+        case 'technologies':
+          title = 'Détails des Technologies';
+          content = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                <h6 class="font-bold text-lg text-gray-900 mb-2">Big Data</h6>
+                <p class="mb-2"><strong class="text-orange-600">Apache Spark :</strong> Framework de traitement distribué pour le traitement par lots et streaming, essentiel pour l'analyse de grands volumes de données.</p>
+                <p class="mb-2"><strong class="text-gray-800">Apache Kafka :</strong> Plateforme de streaming distribuée de haute performance pour la publication, la souscription, le stockage et le traitement de flux d'enregistrements en temps réel.</p>
+                <p><strong class="text-green-600">Apache Flink :</strong> Framework et moteur distribué pour le traitement de flux de données en temps réel et des applications "event-driven".</p>
+              </div>
+              <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                <h6 class="font-bold text-lg text-gray-900 mb-2">Cloud Native</h6>
+                <p class="mb-2"><strong class="text-blue-600">Kubernetes :</strong> Système open-source pour l'automatisation du déploiement, la mise à l'échelle et la gestion des applications conteneurisées.</p>
+                <p class="mb-2"><strong class="text-[#0075a8]">Rancher :</strong> Plateforme complète de gestion de clusters Kubernetes, offrant une UI unifiée et des outils de gestion des politiques de sécurité.</p>
+                <p><strong class="text-[#0f1689]">Helm :</strong> Gestionnaire de packages pour Kubernetes, simplifiant le déploiement et la gestion des applications complexes sur Kubernetes.</p>
+              </div>
+            </div>
+            <p class="mt-4 text-gray-700">Ces technologies, lorsqu'elles sont combinées, offrent une agilité et une efficacité sans précédent pour les charges de travail de données modernes.</p>
+          `;
+          break;
+        case 'interconnections':
+          title = 'Schéma des Interconnexions';
+          // Using a simple image placeholder for the Mermaid diagram. In a real app, you'd render it.
+          content = `
+            <img src="https://placehold.co/600x400/D1E7DD/000000?text=Diagramme+d'interconnexions" alt="Diagramme d'interconnexions des technologies" class="w-full h-auto rounded-lg shadow-md mb-4">
+            <p class="text-gray-700">Ce diagramme illustre les principales interconnexions entre les technologies de l'écosystème. Par exemple, Rancher gère les clusters Kubernetes, qui à leur tour orchestrent les applications Big Data comme Spark et Kafka. Prometheus et Grafana s'intègrent pour le monitoring de l'ensemble.</p>
+          `;
+          break;
+        case 'k8s-bigdata':
+          title = 'Kubernetes et Big Data: Cas d\'usage';
+          content = `
+            <p class="mb-4 text-gray-700">Kubernetes offre plusieurs avantages clés pour l'exécution des charges de travail Big Data :</p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2">
+              <li><strong>Orchestration des Jobs Spark :</strong> Déploiement et gestion dynamique des applications Spark en tant que pods sur Kubernetes.</li>
+              <li><strong>Haute Disponibilité de Kafka :</strong> Exécution de brokers Kafka de manière résiliente avec auto-réparation en cas de défaillance de nœuds.</li>
+              <li><strong>Gestion des Ressources :</strong> Utilisation des capacités de planification de Kubernetes pour allouer efficacement les CPU, la mémoire et le stockage aux jobs de données.</li>
+              <li><strong>Isolation :</strong> Chaque job ou service de données peut s'exécuter dans son propre environnement isolé (namespace), évitant les conflits de ressources.</li>
+              <li><strong>Auto-Scaling :</strong> Mise à l'échelle automatique des ressources de calcul (Spark executors, pods Flink) en fonction de la charge de travail.</li>
+              <li><strong>Portabilité Multi-Cloud :</strong> Déploiement des mêmes applications Big Data sur n'importe quel cluster Kubernetes, qu'il soit on-premise ou dans le cloud.</li>
+            </ul>
+            <p class="mt-4 text-gray-700">Cela permet aux équipes de données de se concentrer sur l'analyse plutôt que sur la gestion complexe de l'infrastructure.</p>
+          `;
+          break;
+        case 'architecture-explanation':
+          title = 'Explications de l\'Architecture';
+          content = `
+            <p class="mb-4 text-gray-700">L'architecture présentée suit une approche en couches pour une gestion et un traitement des données optimaux :</p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2">
+              <li><strong>Couche de Gestion (Rancher) :</strong> Centralise l'administration de multiples clusters Kubernetes, simplifiant l'opérationnalisation et la gouvernance.</li>
+              <li><strong>Couche d'Orchestration (Kubernetes) :</strong> Le cœur de la plateforme, gérant le cycle de vie des conteneurs, l'allocation des ressources et la résilience des services.</li>
+              <li><strong>Couche de Traitement des Données (Spark/Flink, Kafka) :</strong> Consomme, traite et distribue les données, qu'elles soient en batch (Spark) ou en temps réel (Flink, Kafka pour le streaming).</li>
+              <li><strong>Couche de Stockage (MinIO) :</strong> Fournit un stockage d'objets compatible S3 pour les données brutes et traitées, accessible par les frameworks Big Data.</li>
+              <li><strong>Couche de Monitoring (Prometheus, Grafana) :</strong> Collecte les métriques de performance et de santé de l'ensemble de l'écosystème et les visualise pour une meilleure observabilité.</li>
+              <li><strong>Couche de Déploiement (Helm, ArgoCD) :</strong> Facilite le packaging et le déploiement des applications sur Kubernetes (Helm) et automatise les déploiements via GitOps (ArgoCD).</li>
+            </ul>
+            <p class="mt-4 text-gray-700">Cette architecture est conçue pour être modulaire, évolutive et résiliente, adaptée aux besoins des entreprises modernes axées sur les données.</p>
+          `;
+          break;
+        default:
+          title = 'Information';
+          content = '<p class="text-gray-700">Aucun détail spécifique disponible pour ce type.</p>';
+      }
+      openModal(title, content);
+    }
+
+    /**
+     * Handles opening/closing of the mobile navigation menu.
+     */
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    /**
+     * Scrolls smoothly to the target section when a navigation link is clicked.
+     */
+    document.querySelectorAll('nav a').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+        // Close mobile menu after clicking a link
+        if (!mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+        }
+      });
+    });
+
+
+    // --- Workflow Simulation Logic ---
+    /**
+     * Simulates a step in the data workflow.
+     * Displays a result and enables the next step button.
+     * @param {string} stepName - The name of the step ('deployment', 'ingestion', 'processing', 'monitoring').
+     */
+    function simulateWorkflowStep(stepName) {
+      // Disable current button to prevent re-click
+      const currentButton = event.target;
+      currentButton.disabled = true;
+      currentButton.classList.add('opacity-50', 'cursor-not-allowed');
+      currentButton.classList.remove('hover:bg-blue-200'); // Remove hover effect for disabled button
+
+      let resultDiv;
+      let nextButton;
+
+      // Hide all result divs first
+      workflowDeploymentResult.classList.add('hidden');
+      workflowIngestionResult.classList.add('hidden');
+      workflowProcessingResult.classList.add('hidden');
+      workflowMonitoringResult.classList.add('hidden');
+
+      setTimeout(() => {
+        switch (stepName) {
+          case 'deployment':
+            resultDiv = workflowDeploymentResult;
+            nextButton = ingestionBtn;
+            workflowSimulationState.deployment = true;
+            break;
+          case 'ingestion':
+            resultDiv = workflowIngestionResult;
+            nextButton = processingBtn;
+            workflowSimulationState.ingestion = true;
+            break;
+          case 'processing':
+            resultDiv = workflowProcessingResult;
+            nextButton = monitoringBtn;
+            workflowSimulationState.processing = true;
+            break;
+          case 'monitoring':
+            resultDiv = workflowMonitoringResult;
+            // No next step in this linear flow, so no nextButton
+            workflowSimulationState.monitoring = true;
+            break;
+        }
+
+        if (resultDiv) {
+          resultDiv.classList.remove('hidden');
+        }
+
+        if (nextButton) {
+          nextButton.disabled = false;
+          nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+          nextButton.classList.add('hover:bg-blue-200'); // Re-add hover effect for enabled button
+        }
+      }, 500); // Simulate a brief delay
+    }
+
+    /**
+     * Resets the workflow simulation to its initial state.
+     */
+    function resetWorkflowSimulation() {
+      workflowSimulationState = {
+        deployment: false,
+        ingestion: false,
+        processing: false,
+        monitoring: false
+      };
+
+      // Hide all result divs
+      workflowDeploymentResult.classList.add('hidden');
+      workflowIngestionResult.classList.add('hidden');
+      workflowProcessingResult.classList.add('hidden');
+      workflowMonitoringResult.classList.add('hidden');
+
+      // Re-enable only the first button and disable the rest
+      document.querySelector('.process-step button').disabled = false;
+      document.querySelector('.process-step button').classList.remove('opacity-50', 'cursor-not-allowed');
+      document.querySelector('.process-step button').classList.add('hover:bg-blue-200');
+
+      ingestionBtn.disabled = true;
+      ingestionBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      ingestionBtn.classList.remove('hover:bg-blue-200');
+
+      processingBtn.disabled = true;
+      processingBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      processingBtn.classList.remove('hover:bg-blue-200');
+
+      monitoringBtn.disabled = true;
+      monitoringBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      monitoringBtn.classList.remove('hover:bg-blue-200');
+
+      console.log('Simulation de workflow réinitialisée.');
+    }
+
+
+    // --- Interactive Simulation Logic ---
+
+    /**
+     * Writes a message to the simulation console output.
+     * @param {string} message - The message to append.
+     * @param {string} type - 'info', 'success', 'error', 'command' to style the message.
+     */
+    function writeToSimulationOutput(message, type = 'info') {
+      const p = document.createElement('p');
+      switch (type) {
+        case 'command':
+          p.classList.add('text-blue-400');
+          p.innerHTML = `&gt; <span class="text-blue-400 font-bold">${message}</span>`;
+          break;
+        case 'success':
+          p.classList.add('text-green-400');
+          p.innerHTML = `&#10003; ${message}`; // Checkmark
+          break;
+        case 'error':
+          p.classList.add('text-red-400');
+          p.innerHTML = `&#10060; ${message}`; // Cross mark
+          break;
+        default:
+          p.classList.add('text-gray-300');
+          p.innerHTML = `&#8227; ${message}`; // Triangle bullet
+      }
+      simulationOutput.appendChild(p);
+      simulationOutput.scrollTop = simulationOutput.scrollHeight; // Auto-scroll to bottom
+    }
+
+    /**
+     * Starts the interactive simulation based on selected scenario and complexity.
+     */
+    function startSimulation() {
+      interactiveSimulationState.scenario = scenarioSelect.value;
+      interactiveSimulationState.complexity = complexitySelect.value;
+      interactiveSimulationState.technologies.k8s = k8sCheck.checked;
+      interactiveSimulationState.technologies.rancher = rancherCheck.checked;
+      interactiveSimulationState.technologies.helm = helmCheck.checked;
+      interactiveSimulationState.running = true;
+      interactiveSimulationState.step = 0;
+
+      simulationOutput.innerHTML = ''; // Clear previous output
+      writeToSimulationOutput(`Démarrage de la simulation : '${interactiveSimulationState.scenario}' (Complexité: ${interactiveSimulationState.complexity})`, 'info');
+      writeToSimulationOutput(`Technologies sélectionnées: K8s: ${interactiveSimulationState.technologies.k8s}, Rancher: ${interactiveSimulationState.technologies.rancher}, Helm: ${interactiveSimulationState.technologies.helm}`, 'info');
+
+      // Show action buttons
+      simulationActions.classList.remove('hidden');
+      actionButtonsContainer.innerHTML = ''; // Clear existing action buttons
+
+      // Define actions based on scenario
+      let actions = [];
+      switch (interactiveSimulationState.scenario) {
+        case 'scaling':
+          actions = [
+            { text: 'Vérifier la charge Kafka', action: 'checkKafkaLoad', tech: ['kafka'] },
+            { text: 'Augmenter les executors Spark', action: 'scaleSparkUp', tech: ['k8s'] },
+            { text: 'Diminuer les executors Spark', action: 'scaleSparkDown', tech: ['k8s'] },
+            { text: 'Vérifier les métriques K8s', action: 'checkK8sMetrics', tech: ['k8s', 'prometheus'] }
+          ];
+          break;
+        case 'failure':
+          actions = [
+            { text: 'Simuler une panne de nœud', action: 'simulateNodeFailure', tech: ['k8s'] },
+            { text: 'Vérifier l\'état des pods', action: 'checkPodStatus', tech: ['k8s'] },
+            { text: 'Redémarrer le service Kafka', action: 'restartKafka', tech: ['helm', 'kafka'] }
+          ];
+          break;
+        case 'upgrade':
+          actions = [
+            { text: 'Vérifier la version actuelle de Kafka', action: 'checkKafkaVersion', tech: ['kafka'] },
+            { text: 'Appliquer la mise à jour Helm', action: 'applyHelmUpgrade', tech: ['helm'] },
+            { text: 'Vérifier le déploiement', action: 'verifyDeployment', tech: ['k8s'] }
+          ];
+          break;
+        case 'monitoring':
+            actions = [
+                { text: 'Déployer Prometheus', action: 'deployPrometheus', tech: ['k8s', 'helm'] },
+                { text: 'Configurer Grafana', action: 'configureGrafana', tech: ['k8s', 'helm'] },
+                { text: 'Vérifier les alertes', action: 'checkAlerts', tech: ['prometheus', 'grafana'] }
+            ];
+            break;
+      }
+
+      // Filter actions based on selected technologies
+      const availableActions = actions.filter(a => {
+        return a.tech.every(t => interactiveSimulationState.technologies[t] || ['kafka', 'prometheus', 'grafana'].includes(t)); // Allow non-K8s specific tech
+      });
+
+      if (availableActions.length === 0) {
+        writeToSimulationOutput("Aucune action disponible pour le scénario et les technologies sélectionnés. Veuillez ajuster les paramètres.", 'error');
+        finishSimulation();
+        return;
+      }
+
+      availableActions.forEach(action => {
+        const button = document.createElement('button');
+        button.className = 'bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300';
+        button.textContent = action.text;
+        button.onclick = () => performSimulationAction(action.action);
+        actionButtonsContainer.appendChild(button);
+      });
+
+      writeToSimulationOutput("Veuillez choisir une action pour commencer le scénario.", 'info');
+    }
+
+    /**
+     * Performs a specific action within the interactive simulation.
+     * @param {string} action - The action to perform.
+     */
+    function performSimulationAction(action) {
+      writeToSimulationOutput(`Commande exécutée : ${action}`, 'command');
+      let response = "";
+      let isSuccess = true;
+
+      switch (action) {
+        case 'checkKafkaLoad':
+          response = "Charge Kafka actuelle : 75%. Le cluster est sous forte demande.";
+          break;
+        case 'scaleSparkUp':
+          if (interactiveSimulationState.technologies.k8s) {
+            response = "Mise à l'échelle des executors Spark réussie sur Kubernetes. Nouveaux pods créés.";
+            writeToSimulationOutput("Vérifiez les métriques K8s pour confirmer le scale-up.", "info");
+          } else {
+            response = "Kubernetes non sélectionné. Impossible de scaler Spark via K8s.";
+            isSuccess = false;
+          }
+          break;
+        case 'scaleSparkDown':
+          if (interactiveSimulationState.technologies.k8s) {
+            response = "Diminution des executors Spark réussie. Ressources libérées.";
+          } else {
+            response = "Kubernetes non sélectionné. Impossible de scaler Spark via K8s.";
+            isSuccess = false;
+          }
+          break;
+        case 'checkK8sMetrics':
+            response = "Métriques Kubernetes : Utilisation CPU 60%, Mémoire 70%. Les nouveaux pods Spark sont opérationnels.";
+            break;
+        case 'simulateNodeFailure':
+            if (interactiveSimulationState.technologies.k8s) {
+                response = "Panne de nœud simulée sur le cluster Kubernetes. Kubernetes tente de redémarrer les pods affectés.";
+                writeToSimulationOutput("Vérifiez l'état des pods pour observer la résilience.", "info");
+            } else {
+                response = "Kubernetes non sélectionné. Impossible de simuler une panne de nœud.";
+                isSuccess = false;
+            }
+            break;
+        case 'checkPodStatus':
+            if (interactiveSimulationState.technologies.k8s) {
+                response = "État des pods : Certains pods ont été recréés et sont en cours d'exécution. La récupération est en cours.";
+                writeToSimulationOutput("Le système est résilient. Le cluster a auto-réparé les défaillances.", "success");
+            } else {
+                response = "Kubernetes non sélectionné. Impossible de vérifier l'état des pods.";
+                isSuccess = false;
+            }
+            break;
+        case 'restartKafka':
+            if (interactiveSimulationState.technologies.helm && interactiveSimulationState.technologies.k8s) {
+                response = "Redémarrage du service Kafka via Helm sur Kubernetes initié. Vérifiez les logs pour la confirmation.";
+            } else {
+                response = "Helm ou Kubernetes non sélectionnés. Impossible de redémarrer Kafka via Helm.";
+                isSuccess = false;
+            }
+            break;
+        case 'checkKafkaVersion':
+            response = "Version actuelle de Kafka : 2.8.1.";
+            writeToSimulationOutput("Une nouvelle version (3.0.0) est disponible. Poursuivez avec la mise à jour Helm.", "info");
+            break;
+        case 'applyHelmUpgrade':
+            if (interactiveSimulationState.technologies.helm) {
+                response = "Mise à jour du Chart Helm pour Kafka initiée. Déploiement progressif en cours.";
+                writeToSimulationOutput("Vérifiez les versions de pods et les logs pour confirmer la mise à jour.", "info");
+            } else {
+                response = "Helm non sélectionné. Impossible d'appliquer la mise à jour.";
+                isSuccess = false;
+            }
+            break;
+        case 'verifyDeployment':
+            if (interactiveSimulationState.technologies.k8s) {
+                response = "Vérification du déploiement Kubernetes: Tous les pods Kafka sont à jour et opérationnels.";
+                writeToSimulationOutput("Mise à jour de Kafka réussie!", "success");
+            } else {
+                response = "Kubernetes non sélectionné. Impossible de vérifier le déploiement.";
+                isSuccess = false;
+            }
+            break;
+        case 'deployPrometheus':
+            if (interactiveSimulationState.technologies.k8s && interactiveSimulationState.technologies.helm) {
+                response = "Prometheus Operator déployé avec succès via Helm. Les métriques commencent à être collectées.";
+            } else {
+                response = "Kubernetes ou Helm non sélectionnés. Impossible de déployer Prometheus.";
+                isSuccess = false;
+            }
+            break;
+        case 'configureGrafana':
+            if (interactiveSimulationState.technologies.k8s && interactiveSimulationState.technologies.helm) {
+                response = "Grafana déployé et configuré avec les sources de données Prometheus. Tableaux de bord par défaut disponibles.";
+            } else {
+                response = "Kubernetes ou Helm non sélectionnés. Impossible de configurer Grafana.";
+                isSuccess = false;
+            }
+            break;
+        case 'checkAlerts':
+            response = "Aucune alerte critique active. Le système est stable. Une alerte de test a été générée.";
+            break;
+        default:
+          response = "Action non reconnue.";
+          isSuccess = false;
+      }
+      writeToSimulationOutput(response, isSuccess ? 'success' : 'error');
+    }
+
+    /**
+     * Finishes the interactive simulation and resets its state.
+     */
+    function finishSimulation() {
+      interactiveSimulationState.running = false;
+      interactiveSimulationState.step = 0;
+      simulationActions.classList.add('hidden');
+      actionButtonsContainer.innerHTML = '';
+      writeToSimulationOutput("Simulation terminée. Vous pouvez choisir un nouveau scénario.", 'info');
+    }
+
+    /**
+     * Placeholder function to simulate diagram download.
+     */
+    function downloadDiagram() {
+      openModal('Télécharger le diagramme', '<p class="text-gray-700">La fonction de téléchargement du diagramme n\'est pas implémentée dans cette démo. Vous pouvez sauvegarder l\'image manuellement.</p>');
+    }
+
+    /**
+     * Placeholder function for case study details.
+     * @param {string} caseType - The type of case study to display.
+     */
+    function showCaseStudy(caseType) {
+      let title = '';
+      let content = '';
+      switch (caseType) {
+        case 'migration':
+          title = 'Cas pratique : Migration Spark vers Kubernetes';
+          content = `
+            <p class="mb-4 text-gray-700"><strong>Défi :</strong> Une entreprise utilisait des clusters Hadoop YARN pour ses jobs Spark ETL. La maintenance était coûteuse, le scaling lent et les déploiements complexes.</p>
+            <p class="mb-4 text-gray-700"><strong>Solution :</strong> Migration des jobs Spark vers Kubernetes. Utilisation de <strong class="text-blue-600">Spark Operator</strong> pour déployer et gérer les applications Spark nativement sur K8s. <strong class="text-[#0f1689]">Helm Charts</strong> ont été utilisés pour standardiser les déploiements de Spark et de ses dépendances (comme MinIO pour le stockage S3).</p>
+            <p class="mb-4 text-gray-700"><strong>Résultat :</strong> Amélioration significative de la vitesse de déploiement (passant de plusieurs heures à quelques minutes), meilleure utilisation des ressources grâce à l'auto-scaling de Kubernetes, et réduction des coûts opérationnels. Les développeurs ont bénéficié d'un environnement plus cohérent et reproductible.</p>
+          `;
+          break;
+        case 'monitoring':
+          title = 'Cas pratique : Monitoring unifié';
+          content = `
+            <p class="mb-4 text-gray-700"><strong>Défi :</strong> Manque de visibilité sur les performances des applications Big Data (Spark, Kafka) et l'infrastructure sous-jacente (Kubernetes). Les équipes passaient beaucoup de temps à corréler les logs et métriques de différentes sources.</p>
+            <p class="mb-4 text-gray-700"><strong>Solution :</strong> Implémentation d'une stack d'observabilité unifiée avec <strong class="text-[#e6522c]">Prometheus</strong> pour la collecte des métriques et <strong class="text-[#f46800]">Grafana</strong> pour la visualisation et les tableaux de bord. Des exporters Prometheus ont été configurés pour Spark, Kafka et les composants Kubernetes.</p>
+            <p class="mb-4 text-gray-700"><strong>Résultat :</strong> Une vue d'ensemble en temps réel de l'état de la plateforme, permettant une détection rapide des problèmes et une résolution proactive. Les alertes configurées dans Prometheus ont réduit le temps de réponse aux incidents, et les tableaux de bord Grafana ont aidé à identifier les goulots d'étranglement de performance.</p>
+          `;
+          break;
+        case 'autoscaling':
+          title = 'Cas pratique : Auto-scaling avec KEDA';
+          content = `
+            <p class="mb-4 text-gray-700"><strong>Défi :</strong> Les applications de streaming de données sur Spark consommaient des ressources de manière inefficace car le nombre d'executors était fixe, ou ajusté manuellement, ne s'adaptant pas à la fluctuation de la charge entrante de Kafka.</p>
+            <p class="mb-4 text-gray-700"><strong>Solution :</strong> Intégration de <strong class="text-green-500">KEDA (Kubernetes Event-driven Autoscaling)</strong>. KEDA a été configuré pour surveiller la longueur des files d'attente Kafka. Lorsque la longueur de la file dépasse un seuil, KEDA augmente automatiquement le nombre de Spark executors. Inversement, il les réduit lorsque la charge diminue.</p>
+            <p class="mb-4 text-gray-700"><strong>Résultat :</strong> Optimisation des coûts d'infrastructure en ne consommant des ressources que lorsque nécessaire, et amélioration de la latence de traitement grâce à une capacité de calcul adaptative. Le système est devenu plus réactif aux pics de charge et plus efficace pendant les périodes creuses.</p>
+          `;
+          break;
+        case 'security':
+          title = 'Cas pratique : Sécurité multi-clusters';
+          content = `
+            <p class="mb-4 text-gray-700"><strong>Défi :</strong> Une organisation gérait plusieurs clusters Kubernetes pour différents départements, chacun avec ses propres besoins en matière d'accès et de conformité. La gestion des identités et des autorisations était fragmentée et sujette aux erreurs.</p>
+            <p class="mb-4 text-gray-700"><strong>Solution :</strong> Utilisation de <strong class="text-[#0075a8]">Rancher</strong> comme plan de contrôle centralisé pour la gestion de la sécurité multi-clusters. Rancher a permis de définir des politiques de contrôle d'accès basé sur les rôles (RBAC) au niveau de l'organisation et de les propager à travers tous les clusters. L'intégration avec l'annuaire d'entreprise a simplifié la gestion des utilisateurs.</p>
+            <p class="mb-4 text-gray-700"><strong>Résultat :</strong> Une posture de sécurité renforcée et simplifiée. Les équipes de sécurité ont pu auditer et appliquer des politiques de manière cohérente sur l'ensemble de l'environnement, réduisant les risques de non-conformité et d'accès non autorisé. La gestion des utilisateurs et des groupes a été centralisée et automatisée.</p>
+          `;
+          break;
+        default:
+          title = 'Cas Pratique Inconnu';
+          content = '<p class="text-gray-700">Désolé, ce cas pratique n\'est pas détaillé ici.</p>';
+      }
+      openModal(title, content);
+    }
+  </script>
+</body>
+</html>
